@@ -19,11 +19,32 @@ const genericSqlQuery = (query = '', values = []) => pool
     .catch(({ code, message }) => ({ code, message }))
 
 
-const readSocios = async () => await genericSqlQuery('SELECT * FROM socios;')
+const readPosts = async () => await genericSqlQuery('SELECT * FROM posts;')
 
+const createPost = async ({ titulo, url: img, descripcion }) => {
+    const query = 'INSERT INTO posts(id, titulo, img, descripcion) VALUES ($1, $2, $3, $4);'
+    const values = [uuidv4(), titulo, img, descripcion]
+    return await genericSqlQuery(query, values)
+}
+
+const updatePost = async (id, { titulo, url: img, descripcion }) => {
+    const query = 'UPDATE posts set titulo = $2, img = $3, descripcion = $4 WHERE id = $1 RETURNING *;'
+    const values = [uuidv4(), titulo, img, descripcion]
+    return await genericSqlQuery(query, values)
+}
+
+const deletePost = async (id) => await genericSqlQuery('DELETE FROM posts WHERE id = $1 RETURNING *;', [id])
+
+const updateLike = async (id, like) => {
+    const query = `UPDATE posts SET likes = $2 WHERE id = $1 RETURNING *;`
+    const values = [id, like];
+    return await genericSqlQuery(query, values)
+}
 
 module.exports = {
-    readSocios,
-    createSocio,
-    eliminarSocio
+    readPosts,
+    createPost,
+    updatePost,
+    deletePost,
+    updateLike
 }

@@ -37,7 +37,7 @@ app.delete('/posts/:id', (req, res) => {
 //rutas likes
 
 app.put('/posts/like/:id', (req, res) => {
-    updateLike(req.params.id, req.body.like)
+    updateLike(req.params.id)
     .then((result) => res.status(result?.code ? 500 : 200).json(result))
     .catch((error) => res.status(500).json(error))
 })

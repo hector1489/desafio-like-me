@@ -35,11 +35,11 @@ const updatePost = async (id, { titulo, url: img, descripcion }) => {
 
 const deletePost = async (id) => await genericSqlQuery('DELETE FROM posts WHERE id = $1 RETURNING *;', [id])
 
-const updateLike = async (id, like) => {
-    const query = `UPDATE posts SET likes = $2 WHERE id = $1 RETURNING *;`
-    const values = [id, like];
-    return await genericSqlQuery(query, values)
+const updateLike = async (id) => {
+    const query = `UPDATE posts SET likes = COALESCE(likes, 0) + 1 WHERE id = $1 RETURNING *;`
+    return await genericSqlQuery(query, [id])
 }
+
 
 module.exports = {
     readPosts,
